@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Portfólio de Receitas Culinárias</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; line-height: 1.6; }
+        .card { border: 1px solid #ccc; padding: 15px; margin-bottom: 10px; border-radius: 5px; }
+        .categoria-tag { background: #e0e0e0; padding: 2px 8px; border-radius: 10px; font-size: 0.8em; margin-right: 5px; }
+        nav { margin-bottom: 20px; background: #f4f4f4; padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <strong>Portfólio ADS</strong> | 
+        <a href="/">Ver Receitas</a> | 
+        <a href="/cadastro-receita">Área do Aluno (Cadastrar)</a>
+    </nav>
+
+    <h1>Receitas da Turma</h1>
+
+    <section id="relatorio">
+        <h3>📊 Relatório de Habilidades (Proporção de Alunos)</h3>
+        <ul id="lista-habilidades"></ul>
+    </section>
+
+    <hr>
+
+    <section id="feed">
+        <h3>🍲 Todas as Receitas</h3>
+        <div id="lista-receitas">Carregando receitas...</div>
+    </section>
+
+    <script>
+        // Função para carregar receitas (Requisito 1.7)
+        async function carregarReceitas() {
+            const resp = await fetch('/api/receitas');
+            const receitas = await resp.json();
+            const div = document.getElementById('lista-receitas');
+            div.innerHTML = '';
+
+            receitas.forEach(r => {
+                const categorias = r.categoria.map(c => `<span class="categoria-tag">${c.nome}</span>`).join('');
+                div.innerHTML += `
+                    <div class="card">
+                        <h4>${r.nome}</h4>
+                        <p>${r.descricao}</p>
+                        <div>${categorias}</div>
+                        <small><a href="${r.link_externo}" target="_blank">Ver passo a passo completo</a></small>
+                    </div>
+                `;
+            });
+        }
+
+        // Função para o relatório (Requisito 1.9)
+        async function carregarRelatorio() {
+            const resp = await fetch('/api/relatorio');
+            const dados = await resp.json();
+            const lista = document.getElementById('lista-habilidades');
+            dados.forEach(h => {
+                lista.innerHTML += `<li>${h.nome}: <strong>${h.proporcao}</strong> dos alunos dominam.</li>`;
+            });
+        }
+
+        carregarReceitas();
+        carregarRelatorio();
+    </script>
+</body>
+</html>

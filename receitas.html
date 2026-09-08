@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Área do Aluno - Cadastrar Receita</title>
+    <style>
+        body { font-family: sans-serif; margin: 40px; }
+        form { max-width: 500px; display: flex; flex-direction: column; gap: 10px; }
+        input, textarea, button { padding: 10px; }
+        button { background-color: #28a745; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <a href="/">⬅ Voltar para o Portfólio</a>
+    <h1>Cadastrar Nova Receita</h1>
+
+    <form id="formReceita">
+        <label>Nome da Receita:</label>
+        <input type="text" id="nome" required>
+
+        <label>Descrição/Ingredientes:</label>
+        <textarea id="descricao" rows="5" required></textarea>
+
+        <label>Link Externo (YouTube/Blog):</label>
+        <input type="url" id="link">
+
+        <label>ID das Categorias (separadas por vírgula):</label>
+        <input type="text" id="categorias" placeholder="Ex: 1, 2">
+        <small>*Em um sistema real, você selecionaria de uma lista.</small>
+
+        <button type="submit">Publicar Receita</button>
+    </form>
+
+    <script>
+        document.getElementById('formReceita').onsubmit = async (e) => {
+            e.preventDefault();
+
+            const dados = {
+                nome: document.getElementById('nome').value,
+                descricao: document.getElementById('descricao').value,
+                link: document.getElementById('link').value,
+                categoriasIds: document.getElementById('categorias').value.split(',').map(id => id.trim())
+            };
+
+            const resp = await fetch('/api/receitas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            if (resp.ok) {
+                alert("Receita cadastrada com sucesso!");
+                window.location.href = "/";
+            } else {
+                alert("Erro ao cadastrar.");
+            }
+        };
+    </script>
+</body>
+</html>
